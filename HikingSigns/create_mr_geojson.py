@@ -13,6 +13,18 @@ def reduce_image_quality(filename, input_folder, output_folder, quality=10):
     else:
         print(f'Error image is not a JPEG: {filename}')
 
+def get_decimal_from_dms(dms, ref):
+    degrees = dms[0]
+    minutes = dms[1] / 60.0
+    seconds = dms[2] / 3600.0
+
+    if ref in ['S', 'W']:
+        degrees = -degrees
+        minutes = -minutes
+        seconds = -seconds
+
+    return degrees + minutes + seconds
+
 def get_exif_data(image_path):
     with open(image_path, 'rb') as image_file:
         image = ExifImage(image_file)
@@ -20,7 +32,9 @@ def get_exif_data(image_path):
 
 def get_lat_lon(image):
     if image.has_exif and 'gps_latitude' in dir(image) and 'gps_longitude' in dir(image):
-        return image.gps_latitude, image.gps_longitude
+        lat = get_decimal_from_dms(image.gps_latitude, image.gps_latitude_ref)
+        lon = get_decimal_from_dms(image.gps_longitude, image.gps_longitude_ref)
+        return lat, lon
     else:
         return None, None
 
@@ -42,7 +56,7 @@ def create_geojson_line_by_line(features, output_file):
                 "type": "FeatureCollection",
                 "features": [feature]
             }
-            f.write("<RS>" + json.dumps(geojson) + "\n")
+            f.write("" + json.dumps(geojson) + "\n")
 
 def main(input_folder, output_folder, no_exif_folder, output_file):
     features = []
@@ -64,9 +78,10 @@ def main(input_folder, output_folder, no_exif_folder, output_file):
                 "type": "Feature",
                 "properties": {
                     "externalId": filename,
-                    "latitude": lat,
-                    "longitude": lon,
-                    "img_url": f'https://raw.githubusercontent.com/Binnette/mr-challenges/main/HikingSigns/photos/{filename}'
+                    "img_url": f'https://raw.githubusercontent.com/Binnette/mr-challenges/main/HikingSigns/photos/{filename}',
+                    "tourism": "information",
+                    "information": "guidepost",
+                    "hiking": "yes"
                 },
                 "geometry": {
                     "type": "Point",
