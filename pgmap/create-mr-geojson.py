@@ -102,7 +102,7 @@ for city_name in city_features.keys():
     filenameLineByLine  = city_name + "_byline.geojson"
     # Save the geojson object as a new file in the output folder with the city name
     with open(os.path.join(output_folder, filename), "w") as f:
-        json.dump(geojson, f, indent=4)
+        json.dump(geojson, f, indent=2)
     create_geojson_line_by_line(features, os.path.join(output_folder, filenameLineByLine))
 
     # Write log
