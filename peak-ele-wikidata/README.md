@@ -41,3 +41,13 @@ Then just import this file when you create or update your challenge in MapRoulet
 My first version of the script was sequential and take around 2 hours for 4,000 peaks, mainly because of the API call.
 
 My second version uses multi-threading and only last 10 minutes for the same number of peaks! 🔥
+
+----
+
+The Overpass query used to get peaks with tag wikidata but no tag ele:
+```
+node[natural=peak][wikidata][!ele];
+out meta;
+```
+
+Click to run it on [Overpass Turbo](http://overpass-turbo.eu/s/1BZr)

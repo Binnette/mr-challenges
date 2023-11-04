@@ -89,7 +89,7 @@ results = tqdm(pool.imap(process_node, nodes), total=len(nodes))
 for i, node in enumerate(results):
     root[i] = node
 
-# Cont the peaks to modify
+# Count the peaks to modify
 peaks_to_modify = count_ele_tags(tree)
 
 # Save the modified xml to a file named "peaks_with_ele.osm"
